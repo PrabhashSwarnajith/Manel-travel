@@ -1,0 +1,6 @@
+@ManelTravel.API_HostAddress = http://localhost:5223
+
+GET {{ManelTravel.API_HostAddress}}/weatherforecast/
+Accept: application/json
+
+###

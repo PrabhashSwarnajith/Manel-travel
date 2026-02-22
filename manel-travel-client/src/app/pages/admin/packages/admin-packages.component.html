@@ -1,0 +1,207 @@
+<div class="admin-packages-container">
+  <div class="page-header">
+    <h1>Manage Tour Packages</h1>
+    <button class="btn-create" (click)="openCreateForm()">
+      + Create New Package
+    </button>
+  </div>
+
+  <!-- Loading State -->
+  <div *ngIf="loading" class="loading">
+    <p>Loading packages...</p>
+  </div>
+
+  <!-- Packages Table -->
+  <div *ngIf="!loading" class="table-container">
+    <table class="packages-table">
+      <thead>
+        <tr>
+          <th>Package Name</th>
+          <th>Destination</th>
+          <th>Duration</th>
+          <th>Price</th>
+          <th>Max Participants</th>
+          <th>Current Participants</th>
+          <th>Start Date</th>
+          <th>Actions</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let pkg of packages" class="table-row">
+          <td>{{ pkg.packageName }}</td>
+          <td>{{ pkg.destination }}</td>
+          <td>{{ pkg.duration }} days</td>
+          <td>Rs. {{ pkg.price | number }}</td>
+          <td>{{ pkg.maxParticipants }}</td>
+          <td>{{ pkg.currentParticipants }}</td>
+          <td>{{ pkg.startDate | date: "short" }}</td>
+          <td class="actions">
+            <button class="btn-edit" (click)="openEditForm(pkg)">Edit</button>
+            <button class="btn-delete" (click)="deletePackage(pkg.packageId)">
+              Delete
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="packages.length === 0" class="no-packages">
+      <p>No packages found. Create one to get started!</p>
+    </div>
+  </div>
+
+  <!-- Modal Form -->
+  <div *ngIf="showForm" class="modal-overlay" (click)="closeForm()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <div class="modal-header">
+        <h2>{{ isEditing ? "Edit Package" : "Create New Package" }}</h2>
+        <button class="btn-close" (click)="closeForm()">✕</button>
+      </div>
+
+      <form class="package-form" (ngSubmit)="submitForm()">
+        <!-- Package Name -->
+        <div class="form-group">
+          <label for="packageName">Package Name *</label>
+          <input
+            id="packageName"
+            type="text"
+            [(ngModel)]="formData.packageName"
+            name="packageName"
+            class="form-input"
+            required
+          />
+        </div>
+
+        <!-- Destination -->
+        <div class="form-group">
+          <label for="destination">Destination *</label>
+          <input
+            id="destination"
+            type="text"
+            [(ngModel)]="formData.destination"
+            name="destination"
+            class="form-input"
+            required
+          />
+        </div>
+
+        <!-- Description -->
+        <div class="form-group">
+          <label for="description">Description *</label>
+          <textarea
+            id="description"
+            [(ngModel)]="formData.description"
+            name="description"
+            class="form-textarea"
+            rows="3"
+            required
+          ></textarea>
+        </div>
+
+        <!-- Duration -->
+        <div class="form-group">
+          <label for="duration">Duration (Days) *</label>
+          <input
+            id="duration"
+            type="number"
+            [(ngModel)]="formData.duration"
+            name="duration"
+            class="form-input"
+            required
+            min="1"
+          />
+        </div>
+
+        <!-- Dates Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="startDate">Start Date *</label>
+            <input
+              id="startDate"
+              type="date"
+              [(ngModel)]="formData.startDate"
+              name="startDate"
+              class="form-input"
+              required
+            />
+          </div>
+          <div class="form-group">
+            <label for="endDate">End Date *</label>
+            <input
+              id="endDate"
+              type="date"
+              [(ngModel)]="formData.endDate"
+              name="endDate"
+              class="form-input"
+              required
+            />
+          </div>
+        </div>
+
+        <!-- Price and Participants Row -->
+        <div class="form-row">
+          <div class="form-group">
+            <label for="price">Price (Rs.) *</label>
+            <input
+              id="price"
+              type="number"
+              [(ngModel)]="formData.price"
+              name="price"
+              class="form-input"
+              required
+              min="0"
+            />
+          </div>
+          <div class="form-group">
+            <label for="maxParticipants">Max Participants *</label>
+            <input
+              id="maxParticipants"
+              type="number"
+              [(ngModel)]="formData.maxParticipants"
+              name="maxParticipants"
+              class="form-input"
+              required
+              min="1"
+            />
+          </div>
+        </div>
+
+        <!-- Image URL -->
+        <div class="form-group">
+          <label for="imageUrl">Image URL</label>
+          <input
+            id="imageUrl"
+            type="url"
+            [(ngModel)]="formData.imageUrl"
+            name="imageUrl"
+            class="form-input"
+            placeholder="https://example.com/image.jpg"
+          />
+        </div>
+
+        <!-- Itinerary -->
+        <div class="form-group">
+          <label for="itinerary">Itinerary</label>
+          <textarea
+            id="itinerary"
+            [(ngModel)]="formData.itinerary"
+            name="itinerary"
+            class="form-textarea"
+            rows="4"
+            placeholder="Day 1: ...\nDay 2: ..."
+          ></textarea>
+        </div>
+
+        <!-- Form Actions -->
+        <div class="form-actions">
+          <button type="submit" class="btn-submit" [disabled]="submitting">
+            {{ submitting ? "Saving..." : isEditing ? "Update" : "Create" }}
+          </button>
+          <button type="button" class="btn-cancel" (click)="closeForm()">
+            Cancel
+          </button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
